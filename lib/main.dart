@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'library.dart';
+import 'dart:math';
 
 void main() {
   runApp(const MyApp());
@@ -13,15 +15,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Icelandic App Stuff'),
@@ -48,35 +41,74 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   String enteredWord1 = "";
-  String textForBox1 = "Subject";
-  String textForBox2 = "Verb";
-  String textForBox3 = "Object";
+  String enteredWord2 = "";
+  String enteredWord3 = "";
+  bool subjectBool = false;
+  bool verbBool = false;
+  bool objectBool = false;
 
-  void checkEntry1() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      if (enteredWord1 == textForBox1) {
-        print("success!");
-      }
-      ;
-    });
+  int getRandomListItem(list) {
+    Random random = Random();
+    int subjRandomNumber = random.nextInt(list.length);
+    return subjRandomNumber;
   }
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  List getWords() {
+    Subject subject = Subject();
+    int subjNum = subject.getSubjectNum();
+    int innerSubjNum = subject.getInnerSubjectNum(subjNum);
+    String isSubject = subject.islSubjList[subjNum][innerSubjNum];
+    String enSubject = subject.engSubjList[subjNum][innerSubjNum];
+    int verbNum = getRandomListItem(verbs);
+    String isVerb = verbs[verbNum].islVerbList[subjNum];
+    String enVerb = verbs[verbNum].engVerbList[subjNum];
+    String verbCase = verbs[verbNum].caseCaused;
+    Object object = Object(verbCase);
+    int objectNum = object.getObjectNum();
+    int objectForm = object.getObjectForm(objectNum);
+    String isObject = object.objList[objectNum][0][objectForm][object.caseInt];
+    String enObject = object.objList[objectNum][1][objectForm][object.caseInt];
+    return [
+      isSubject,
+      enSubject,
+      isVerb,
+      enVerb,
+      isObject,
+      enObject
+    ];
+  }
+
+  void checkEntry1(String isSubject) {
+    if (enteredWord1 == isSubject) {
+      subjectBool = true;
+    } else {
+      subjectBool = false;
+    }
+  }
+
+  void checkEntry2(String isVerb) {
+    if (enteredWord2 == isVerb) {
+      verbBool = true;
+    } else {
+      verbBool = false;
+    }
+  }
+
+  void checkEntry3(String isObject) {
+    if (enteredWord3 == isObject) {
+      objectBool = true;
+    } else {
+      objectBool = false;
+    }
+  }
+
+  void checkAnswer() {
+    if (subjectBool && verbBool && objectBool) {
+      print("All correct!");
+    } else {
+      print("Not quite there...");
+    }
   }
 
   @override
@@ -87,6 +119,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    List useWords = getWords();
+    String isSubject = useWords[0];
+    String enSubject = useWords[1];
+    String isVerb = useWords[2];
+    String enVerb = useWords[3];
+    String isObject = useWords[4];
+    String enObject = useWords[5];
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -100,43 +140,26 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
-              // Column is also a layout widget. It takes a list of children and
-              // arranges them vertically. By default, it sizes itself to fit its
-              // children horizontally, and tries to be as tall as its parent.
-              //
-              // Invoke "debug painting" (press "p" in the console, choose the
-              // "Toggle Debug Paint" action from the Flutter Inspector in Android
-              // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-              // to see the wireframe for each widget.
-              //
-              // Column has various properties to control how it sizes itself and
-              // how it positions its children. Here we use mainAxisAlignment to
-              // center the children vertically; the main axis here is the vertical
-              // axis because Columns are vertical (the cross axis would be
-              // horizontal).
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Container(
+                SizedBox(
                   width: 100,
-                  child: Container(
-                    width: 100,
                     child: Text(
-                      textForBox1,
+                      enSubject,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                ),
-                Container(
+                SizedBox(
                   width: 100,
                   child: Text(
-                    textForBox2,
+                    enVerb,
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 100,
                   child: Text(
-                    textForBox3,
+                    enObject,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -144,62 +167,86 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(height: 10),
             Row(
-              // Column is also a layout widget. It takes a list of children and
-              // arranges them vertically. By default, it sizes itself to fit its
-              // children horizontally, and tries to be as tall as its parent.
-              //
-              // Invoke "debug painting" (press "p" in the console, choose the
-              // "Toggle Debug Paint" action from the Flutter Inspector in Android
-              // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-              // to see the wireframe for each widget.
-              //
-              // Column has various properties to control how it sizes itself and
-              // how it positions its children. Here we use mainAxisAlignment to
-              // center the children vertically; the main axis here is the vertical
-              // axis because Columns are vertical (the cross axis would be
-              // horizontal).
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Container(
-                  width: 100,
-                  child: TextField(
-                    onSubmitted: (text) {
-                      enteredWord1 = text;
-                      checkEntry1();
-                    },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'First',
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: Container(
+                    margin: EdgeInsets.all(10.0),
+                    child: TextField(
+                      onSubmitted: (text) {
+                        enteredWord1 = text;
+                        checkEntry1(isSubject);
+                      },
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: isSubject,
+                      ),
+                      keyboardType: TextInputType.text,
                     ),
-                    keyboardType: TextInputType.text,
                   ),
                 ),
-                Container(
-                  width: 100,
-                  child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Second',
-                      )),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: Container(
+                    margin: EdgeInsets.all(10.0),
+                    child: TextField(
+                        onSubmitted: (text) {
+                          enteredWord2 = text;
+                          checkEntry2(isVerb);
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: isVerb,
+                        )),
+                  ),
                 ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: Container(
+                    margin: EdgeInsets.all(10.0),
+                    child: TextField(
+                        onSubmitted: (text) {
+                          enteredWord3 = text;
+                          checkEntry3(isObject);
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: isObject,
+                        )),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: <Widget>[
                 Container(
-                  width: 100,
-                  child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Third',
-                      )),
+                  margin: const EdgeInsets.only(top: 50.0),
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Container(
+                      width: 150.0,
+                      height: 50.0,
+                      color: Colors.amber[600],
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(16.0),
+                          primary: Colors.red,
+                          textStyle: const TextStyle(fontSize: 15),
+                        ),
+                        onPressed: () {
+                          checkAnswer();
+                        },
+                        child: const Text('Check Answer'),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

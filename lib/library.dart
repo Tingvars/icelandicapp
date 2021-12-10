@@ -8,10 +8,10 @@ List<String> plur1pis = ["Við"];
 List<String> plur2pis = ["Þið"];
 List<String> plur3pis = ["Þeir", "Þær", "Þau"];
 List<String> sing1pen = ["I"];
-List<String> sing2pen = ["You"];
+List<String> sing2pen = ["You (s.)"];
 List<String> sing3pen = ["He", "She", "It"];
 List<String> plur1pen = ["We"];
-List<String> plur2pen = ["You"];
+List<String> plur2pen = ["You (pl.)"];
 List<String> plur3pen = ["They"];
 
 class Subject {
@@ -34,7 +34,7 @@ class Subject {
   ];
 
   int getRandomListItem(list) {
-    Random random = new Random();
+    Random random = Random();
     int subjRandomNumber = random.nextInt((list.length -1));
     return subjRandomNumber;
   }
@@ -57,6 +57,13 @@ class Subject {
 }
 
 List<Verb> verbs = [
+  leitaad,
+  elska,
+  hata,
+  sja,
+  eiga,
+  borda,
+  maneftir,
   hjalpa,
   horfaa,
   talavid,
@@ -73,7 +80,112 @@ class Verb {
   Verb(this.islVerbList, this.engVerbList, this.caseCaused);
 }
 
-Verb hjalpa = new Verb([
+Verb leitaad = Verb([
+  "leita að",
+  "leitar að",
+  "leitar að",
+  "leitum að",
+  "leitið að",
+  "leita að",
+], [
+  "look for",
+  "look for",
+  "looks for",
+  "look for",
+  "look for",
+  "look for",
+], "dat");
+Verb elska = Verb([
+  "elska",
+  "elskar",
+  "elskar",
+  "elskum",
+  "elskið",
+  "elska",
+], [
+  "love",
+  "love",
+  "loves",
+  "love",
+  "love",
+  "love",
+], "acc");
+Verb hata = Verb([
+  "hata",
+  "hatar",
+  "hatar",
+  "hötum",
+  "hatið",
+  "hata",
+], [
+  "hate",
+  "hate",
+  "hates",
+  "hate",
+  "hate",
+  "hate",
+], "acc");
+Verb sja = Verb([
+  "sé",
+  "sérð",
+  "sér",
+  "sjáum",
+  "sjáið",
+  "sjá",
+], [
+  "see",
+  "see",
+  "sees",
+  "see",
+  "see",
+  "see",
+], "acc");
+Verb eiga = Verb([
+  "á",
+  "átt",
+  "á",
+  "eigum",
+  "eigið",
+  "eiga",
+], [
+  "own",
+  "own",
+  "owns",
+  "own",
+  "own",
+  "own",
+], "acc");
+Verb borda = Verb([
+  "borða",
+  "borðar",
+  "borðar",
+  "borðum",
+  "borðið",
+  "borða",
+], [
+  "eat",
+  "eat",
+  "eats",
+  "eat",
+  "eat",
+  "eat",
+], "acc");
+Verb maneftir = Verb([
+  "man eftir",
+  "manst eftir",
+  "man eftir",
+  "munum eftir",
+  "munið eftir",
+  "muna eftir",
+], [
+  "remember",
+  "remember",
+  "remembers",
+  "remember",
+  "remember",
+  "remember",
+], "dat");
+Verb hjalpa = Verb([
   "hjálpa",
   "hjálpar",
   "hjálpar",
@@ -88,7 +200,7 @@ Verb hjalpa = new Verb([
   "help",
   "help",
 ], "dat");
-Verb horfaa = new Verb([
+Verb horfaa = Verb([
   "horfi á",
   "horfir á",
   "horfir á",
@@ -103,7 +215,7 @@ Verb horfaa = new Verb([
   "watch",
   "watch",
 ], "acc");
-Verb talavid = new Verb([
+Verb talavid = Verb([
   "tala við",
   "talar við",
   "talar við",
@@ -118,7 +230,7 @@ Verb talavid = new Verb([
   "talk to",
   "talk to",
 ], "acc");
-Verb hitta = new Verb([
+Verb hitta = Verb([
   "hitti",
   "hittir",
   "hittir",
@@ -133,7 +245,7 @@ Verb hitta = new Verb([
   "meet",
   "meet",
 ], "acc");
-Verb henda = new Verb([
+Verb henda = Verb([
   "hendi",
   "hendir",
   "hendir",
@@ -148,7 +260,7 @@ Verb henda = new Verb([
   "throw",
   "throw",
 ], "dat");
-Verb sakna = new Verb([
+Verb sakna = Verb([
   "sakna",
   "saknar",
   "saknar",
@@ -166,6 +278,12 @@ Verb sakna = new Verb([
 
 class Object {
   List<List> objList = [
+    hus,
+    epli,
+    mynd,
+    bill,
+    bord,
+    bolti,
     hestur,
     ljos,
     tolva,
@@ -173,7 +291,7 @@ class Object {
     hundur
   ];
   String caseCaused;
-  int caseInt;
+  int caseInt = 0;
 
   Object(this.caseCaused) {
     if (caseCaused == "nom") {
@@ -188,7 +306,7 @@ class Object {
   }
 
   int getRandomListItem(list) {
-    Random random = new Random();
+    Random random = Random();
     int subjRandomNumber = random.nextInt(list.length);
     return subjRandomNumber;
   }
@@ -204,6 +322,90 @@ class Object {
   }
 }
 
+List<List> hus = [
+  [
+    ["hús", "hús", "húsi", "húss"],
+    ["hús", "hús", "húsum", "húsa"],
+    ["húsið", "húsið", "húsinu", "hússins"],
+    ["húsin", "húsin", "húsunum", "húsanna"],
+  ],
+  [
+    ["a house", "a house", "a house", "a house"],
+    ["houses", "houses", "houses", "houses"],
+    ["the house", "the house", "the house", "the house"],
+    ["the houses", "the houses", "the houses", "the houses"],
+  ],
+];
+List<List> epli = [
+  [
+    ["epli", "epli", "epli", "eplis"],
+    ["epli", "epli", "eplum", "epla"],
+    ["eplið", "eplið", "eplinu", "eplisins"],
+    ["eplin", "eplin", "eplunum", "eplanna"],
+  ],
+  [
+    ["an apple", "an apple", "an apple", "an apple"],
+    ["apples", "apples", "apples", "apples"],
+    ["the picture", "the picture", "the picture", "the picture"],
+    ["the pictures", "the pictures", "the pictures", "the pictures"],
+  ],
+];
+List<List> mynd = [
+  [
+    ["mynd", "mynd", "mynd", "myndar"],
+    ["myndir", "myndir", "myndum", "mynda"],
+    ["myndin", "myndina", "myndinni", "myndarinnar"],
+    ["myndirnar", "myndirnar", "myndunum", "myndanna"],
+  ],
+  [
+    ["a picture", "a picture", "a picture", "a picture"],
+    ["pictures", "pictures", "pictures", "pictures"],
+    ["the picture", "the picture", "the picture", "the picture"],
+    ["the pictures", "the pictures", "the pictures", "the pictures"],
+  ],
+];
+List<List> bill = [
+  [
+    ["bíll", "bíl", "bíl", "bíls"],
+    ["bílar", "bíla", "bílum", "bíla"],
+    ["bíllinn", "bílinn", "bílnum", "bílsins"],
+    ["bílarnir", "bílana", "bílunum", "bílanna"],
+  ],
+  [
+    ["a car", "a car", "a car", "a car"],
+    ["cars", "cars", "cars", "cars"],
+    ["the car", "the car", "the car", "the car"],
+    ["the cars", "the cars", "the cars", "the cars"],
+  ],
+];
+List<List> bord = [
+  [
+    ["borð", "borð", "borði", "borðs"],
+    ["borð", "borð", "borðum", "borða"],
+    ["borðið", "borðið", "borðinu", "borðsins"],
+    ["borðin", "borðin", "borðunum", "borðanna"],
+  ],
+  [
+    ["a table", "a table", "a table", "a table"],
+    ["tables", "tables", "tables", "tables"],
+    ["the table", "the table", "the table", "the table"],
+    ["the tables", "the tables", "the tables", "the tables"],
+  ],
+];
+List<List> bolti = [
+  [
+    ["bolti", "bolta", "bolta", "bolta"],
+    ["boltar", "bolta", "boltum", "bolta"],
+    ["boltinn", "boltann", "boltanum", "boltans"],
+    ["boltarnir", "boltana", "boltunum", "boltanna"],
+  ],
+  [
+    ["a ball", "a ball", "a ball", "a ball"],
+    ["balls", "balls", "balls", "balls"],
+    ["the ball", "the ball", "the ball", "the ball"],
+    ["the balls", "the balls", "the balls", "the balls"],
+  ],
+];
 List<List> hestur = [
   [
     ["hestur", "hest", "hesti", "hests"],
