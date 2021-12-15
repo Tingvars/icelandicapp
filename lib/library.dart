@@ -346,8 +346,8 @@ List<List> epli = [
   [
     ["an apple", "an apple", "an apple", "an apple"],
     ["apples", "apples", "apples", "apples"],
-    ["the picture", "the picture", "the picture", "the picture"],
-    ["the pictures", "the pictures", "the pictures", "the pictures"],
+    ["the apple", "the apple", "the apple", "the apple"],
+    ["the apples", "the apples", "the apples", "the apples"],
   ],
 ];
 List<List> mynd = [

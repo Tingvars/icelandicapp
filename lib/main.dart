@@ -5,13 +5,21 @@ import 'dart:math';
 void main() {
   runApp(MaterialApp(
     title: 'Flutter',
+    theme: new ThemeData(scaffoldBackgroundColor: const Color(0xFFFCF788)),
     home: FirstPage(),
   ),
   );
 }
 
-class FirstPage extends StatelessWidget {
-  int turnCounter = 0;
+class FirstPage extends StatefulWidget {
+  const FirstPage({Key? key}) : super(key: key);
+
+  @override
+  State<FirstPage> createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +28,42 @@ class FirstPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "WELCOME TO GRAMMAR VIKING",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: 200,
+                ),
+                child:
+                    Image(image: AssetImage('images/vikingintro.png')),
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+              Container(
+                child: Text(
+                  "Show IS hints?",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Container(
+                child: Checkbox(
+                  value: isChecked,
+                  onChanged: (bool? value) { // This is where we update the state when the checkbox is tapped
+                    setState(() {
+                      isChecked = value!;
+                    });
+                  }
+                ),
+            ),
+    ],
+    ),
             Text(
-              "First page",
+              "Tick this box to see the undeclined forms of the Icelandic words - or leave it unticked to test your vocabulary!",
               textAlign: TextAlign.center,
             ),
             Container(
@@ -35,14 +77,14 @@ class FirstPage extends StatelessWidget {
                   child: TextButton(
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(16.0),
-                      primary: Colors.red,
+                      primary: Colors.black,
                       textStyle: const TextStyle(fontSize: 15),
                     ),
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => QuizPage(turnCounter),
+                            builder: (context) => QuizPage(0, 0, isChecked),
                           ));
                     },
                     child: const Text('Start Game'),
@@ -57,6 +99,7 @@ class FirstPage extends StatelessWidget {
   }
 }
 
+
 class QuizPage extends StatelessWidget {
   String enteredWord1 = "";
   String enteredWord2 = "";
@@ -65,8 +108,10 @@ class QuizPage extends StatelessWidget {
   bool verbBool = false;
   bool objectBool = false;
   int turnCounter;
+  int rightCounter;
+  bool hintsOn;
 
-  QuizPage(this.turnCounter);
+  QuizPage(this.turnCounter, this.rightCounter, this.hintsOn);
 
   int getRandomListItem(list) {
     Random random = Random();
@@ -80,22 +125,28 @@ class QuizPage extends StatelessWidget {
     int innerSubjNum = subject.getInnerSubjectNum(subjNum);
     String isSubject = subject.islSubjList[subjNum][innerSubjNum];
     String enSubject = subject.engSubjList[subjNum][innerSubjNum];
+    String isHelpSubject = subject.islSubjList[subjNum][innerSubjNum];
     int verbNum = getRandomListItem(verbs);
     String isVerb = verbs[verbNum].islVerbList[subjNum];
     String enVerb = verbs[verbNum].engVerbList[subjNum];
+    String isHelpVerb = verbs[verbNum].islVerbList[5];
     String verbCase = verbs[verbNum].caseCaused;
     Object object = Object(verbCase);
     int objectNum = object.getObjectNum();
     int objectForm = object.getObjectForm(objectNum);
     String isObject = object.objList[objectNum][0][objectForm][object.caseInt];
     String enObject = object.objList[objectNum][1][objectForm][object.caseInt];
+    String isHelpObject = object.objList[objectNum][0][objectForm][0];
     return [
       isSubject,
       enSubject,
       isVerb,
       enVerb,
       isObject,
-      enObject
+      enObject,
+      isHelpSubject,
+      isHelpVerb,
+      isHelpObject
     ];
   }
 
@@ -123,6 +174,30 @@ class QuizPage extends StatelessWidget {
     }
   }
 
+  String getSubjectLabel(String isS, String enS) {
+    if (hintsOn) {
+      return isS;
+    } else {
+      return enS;
+    }
+  }
+
+  String getVerbLabel(String isV, String enV) {
+    if (hintsOn) {
+      return isV;
+    } else {
+      return enV;
+    }
+  }
+
+  String getObjectLabel(String isO, String enO) {
+    if (hintsOn) {
+      return isO;
+    } else {
+      return enO;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -133,15 +208,26 @@ class QuizPage extends StatelessWidget {
     String enVerb = useWords[3];
     String isObject = useWords[4];
     String enObject = useWords[5];
+    String isHelpSubject = useWords[6];
+    String isHelpVerb = useWords[7];
+    String isHelpObject = useWords[8];
+    String subjectLabel = enSubject;
+    String verbLabel = enVerb;
+    String objectLabel = enObject;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Icelandic app stuff"),
-      ),
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 70,
+              ),
+              child:
+              Image(image: AssetImage('images/vikingthinking.png')),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -169,6 +255,7 @@ class QuizPage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -182,8 +269,10 @@ class QuizPage extends StatelessWidget {
                         checkEntry1(isSubject);
                       },
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(),
-                        labelText: isSubject,
+                        labelText: getSubjectLabel(isHelpSubject, enSubject),
                       ),
                       keyboardType: TextInputType.text,
                     ),
@@ -199,8 +288,10 @@ class QuizPage extends StatelessWidget {
                           checkEntry2(isVerb);
                         },
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
                           border: OutlineInputBorder(),
-                          labelText: isVerb,
+                          labelText: getVerbLabel(isHelpVerb, enVerb),
                         )),
                   ),
                 ),
@@ -214,13 +305,16 @@ class QuizPage extends StatelessWidget {
                           checkEntry3(isObject);
                         },
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
                           border: OutlineInputBorder(),
-                          labelText: isObject,
+                          labelText: getObjectLabel(isHelpObject, enObject),
                         )),
                   ),
                 ),
               ],
             ),
+
             Row(
               children: <Widget>[
                 Container(
@@ -234,7 +328,7 @@ class QuizPage extends StatelessWidget {
                       child: TextButton(
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.all(16.0),
-                          primary: Colors.red,
+                          primary: Colors.black,
                           textStyle: const TextStyle(fontSize: 15),
                         ),
                         onPressed: () {
@@ -242,7 +336,7 @@ class QuizPage extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => GotItRightPage(turnCounter, "$enSubject $enVerb $enObject", "$isSubject $isVerb $isObject"),
+                                  builder: (context) => GotItRightPage(turnCounter, rightCounter, "$enSubject $enVerb $enObject", "$isSubject $isVerb $isObject", hintsOn),
                                 ));
                           } else {
                             showDialog<String>(
@@ -259,7 +353,7 @@ class QuizPage extends StatelessWidget {
                           Navigator.push(
                           context,
                           MaterialPageRoute(
-                          builder: (context) => GaveUpPage(turnCounter, "$enSubject $enVerb $enObject", "$isSubject $isVerb $isObject"),
+                          builder: (context) => GaveUpPage(turnCounter, rightCounter, "$enSubject $enVerb $enObject", "$isSubject $isVerb $isObject", hintsOn),
                           ));
                           },
                                     child: const Text('Give up'),
@@ -286,10 +380,12 @@ class QuizPage extends StatelessWidget {
 
 class GotItRightPage extends StatelessWidget {
   int turnCounter;
+  int rightCounter;
   String enSentence;
   String isSentence;
+  bool hintsOn;
 
-  GotItRightPage(this.turnCounter, this.enSentence, this.isSentence);
+  GotItRightPage(this.turnCounter, this.rightCounter, this.enSentence, this.isSentence, this.hintsOn);
 
   @override
   Widget build(BuildContext context) {
@@ -298,6 +394,13 @@ class GotItRightPage extends StatelessWidget {
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 200,
+              ),
+              child:
+              Image(image: AssetImage('images/vikinghappy.png')),
+            ),
             Text(
                 "That's right!",
                 textAlign: TextAlign.center,
@@ -321,19 +424,28 @@ class GotItRightPage extends StatelessWidget {
                   child: TextButton(
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(16.0),
-                      primary: Colors.red,
+                      primary: Colors.black,
                       textStyle: const TextStyle(fontSize: 15),
                     ),
                     onPressed: () {
-                      turnCounter = turnCounter + 1;
-                      print(turnCounter);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => QuizPage(turnCounter),
-                          ));
+                      rightCounter = rightCounter + 1;
+                      if (turnCounter > 8) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EndPage(turnCounter, rightCounter, hintsOn),
+                            ));
+                      } else {
+                        turnCounter = turnCounter + 1;
+                        print(turnCounter);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => QuizPage(turnCounter, rightCounter, hintsOn),
+                            ));
+                      };
                     },
-                    child: const Text('Start again'),
+                    child: const Text('Continue ->'),
                   ),
                 ),
               ),
@@ -347,10 +459,12 @@ class GotItRightPage extends StatelessWidget {
 
 class GaveUpPage extends StatelessWidget {
   int turnCounter;
+  int rightCounter;
   String enSentence;
   String isSentence;
+  bool hintsOn;
 
-  GaveUpPage(this.turnCounter, this.enSentence, this.isSentence);
+  GaveUpPage(this.turnCounter, this.rightCounter, this.enSentence, this.isSentence, this.hintsOn);
 
   @override
   Widget build(BuildContext context) {
@@ -359,6 +473,13 @@ class GaveUpPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 150,
+              ),
+              child:
+              Image(image: AssetImage('images/vikingintro.png')),
+            ),
             Text(
               enSentence,
               textAlign: TextAlign.center,
@@ -378,19 +499,95 @@ class GaveUpPage extends StatelessWidget {
                   child: TextButton(
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(16.0),
-                      primary: Colors.red,
+                      primary: Colors.black,
                       textStyle: const TextStyle(fontSize: 15),
                     ),
                     onPressed: () {
+                      if (turnCounter > 8) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EndPage(turnCounter, rightCounter, hintsOn),
+                            ));
+                      } else {
                       turnCounter = turnCounter + 1;
                       print(turnCounter);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => QuizPage(turnCounter),
+                            builder: (context) => QuizPage(turnCounter, rightCounter, hintsOn),
+                          ));
+                      }
+                    },
+                    child: const Text('Continue ->'),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EndPage extends StatelessWidget {
+  int turnCounter;
+  int rightCounter;
+  bool hintsOn;
+
+  EndPage(this.turnCounter, this.rightCounter, this.hintsOn);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 200,
+              ),
+              child:
+              Image(image: AssetImage('images/vikingcelebrate.png')),
+            ),
+            Text(
+              "Congratulations! You got",
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              "$rightCounter / 10",
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              "correct",
+              textAlign: TextAlign.center,
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 50.0),
+              width: MediaQuery.of(context).size.width,
+              child: Center(
+                child: Container(
+                  width: 150.0,
+                  height: 50.0,
+                  color: Colors.amber[600],
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(16.0),
+                      primary: Colors.black,
+                      textStyle: const TextStyle(fontSize: 15),
+                    ),
+                    onPressed: () {
+                      turnCounter = 0;
+                      rightCounter = 0;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QuizPage(turnCounter, rightCounter, hintsOn),
                           ));
                     },
-                    child: const Text('Start again'),
+                    child: const Text('Start New Game'),
                   ),
                 ),
               ),
