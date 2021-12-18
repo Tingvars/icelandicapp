@@ -18,6 +18,7 @@ class QuizPage extends StatelessWidget {
   int rightCounter;
   bool hintsOn;
 
+  //Determine how many turns, how many right, and IS hints on or off:
   QuizPage(this.turnCounter, this.rightCounter, this.hintsOn);
 
   int getRandomListItem(list) {
@@ -26,16 +27,19 @@ class QuizPage extends StatelessWidget {
     return subjRandomNumber;
   }
 
+  //An actual new game. Randomizes a new sentence based on "library":
   List getWords() {
     Subject subject = Subject();
     int subjNum = subject.getSubjectNum();
     int innerSubjNum = subject.getInnerSubjectNum(subjNum);
     String isSubject = subject.islSubjList[subjNum][innerSubjNum];
     String enSubject = subject.engSubjList[subjNum][innerSubjNum];
+    //Returns the base form of the word for IS hints:
     String isHelpSubject = subject.islSubjList[subjNum][innerSubjNum];
     int verbNum = getRandomListItem(verbs);
     String isVerb = verbs[verbNum].islVerbList[subjNum];
     String enVerb = verbs[verbNum].engVerbList[subjNum];
+    //Returns the base form of the word for IS hints:
     String isHelpVerb = verbs[verbNum].islVerbList[5];
     String verbCase = verbs[verbNum].caseCaused;
     Object object = Object(verbCase);
@@ -43,6 +47,7 @@ class QuizPage extends StatelessWidget {
     int objectForm = object.getObjectForm(objectNum);
     String isObject = object.objList[objectNum][0][objectForm][object.caseInt];
     String enObject = object.objList[objectNum][1][objectForm][object.caseInt];
+    //Returns the base form of the word for IS hints:
     String isHelpObject = object.objList[objectNum][0][objectForm][0];
     return [
       isSubject,
@@ -57,6 +62,7 @@ class QuizPage extends StatelessWidget {
     ];
   }
 
+  //checking entries against the IS words in the background:
   void checkEntry1(String isSubject) {
     if (enteredWord1 == isSubject) {
       subjectBool = true;
@@ -81,27 +87,12 @@ class QuizPage extends StatelessWidget {
     }
   }
 
-  String getSubjectLabel(String isS, String enS) {
+  //checks if IS hints were toggled on and returns label accordingly:
+  String getLabel(String isl, String eng) {
     if (hintsOn) {
-      return isS;
+      return isl;
     } else {
-      return enS;
-    }
-  }
-
-  String getVerbLabel(String isV, String enV) {
-    if (hintsOn) {
-      return isV;
-    } else {
-      return enV;
-    }
-  }
-
-  String getObjectLabel(String isO, String enO) {
-    if (hintsOn) {
-      return isO;
-    } else {
-      return enO;
+      return eng;
     }
   }
 
@@ -118,9 +109,6 @@ class QuizPage extends StatelessWidget {
     String isHelpSubject = useWords[6];
     String isHelpVerb = useWords[7];
     String isHelpObject = useWords[8];
-    String subjectLabel = enSubject;
-    String verbLabel = enVerb;
-    String objectLabel = enObject;
 
     return Scaffold(
 
@@ -179,7 +167,7 @@ class QuizPage extends StatelessWidget {
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(),
-                        labelText: getSubjectLabel(isHelpSubject, enSubject),
+                        labelText: getLabel(isHelpSubject, enSubject),
                       ),
                       keyboardType: TextInputType.text,
                     ),
@@ -198,7 +186,7 @@ class QuizPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
-                          labelText: getVerbLabel(isHelpVerb, enVerb),
+                          labelText: getLabel(isHelpVerb, enVerb),
                         )),
                   ),
                 ),
@@ -215,7 +203,7 @@ class QuizPage extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(),
-                          labelText: getObjectLabel(isHelpObject, enObject),
+                          labelText: getLabel(isHelpObject, enObject),
                         )),
                   ),
                 ),
@@ -239,13 +227,15 @@ class QuizPage extends StatelessWidget {
                           textStyle: const TextStyle(fontSize: 15),
                         ),
                         onPressed: () {
+                          //if all the words are correct = gotitrightpage:
                           if (subjectBool && verbBool && objectBool) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => GotItRightPage(turnCounter, rightCounter, "$enSubject $enVerb $enObject", "$isSubject $isVerb $isObject", hintsOn, enteredWord1, enteredWord2, enteredWord3),
+                                  builder: (context) => GotItRightPage(turnCounter, rightCounter, "$enSubject $enVerb $enObject", "$isSubject $isVerb $isObject", hintsOn),
                                 ));
                           } else {
+                            //if not all the words are correct = pop-up where you can close it or give up = gaveuppage:
                             showDialog<String>(
                               context: context,
                               builder: (BuildContext context) => AlertDialog(

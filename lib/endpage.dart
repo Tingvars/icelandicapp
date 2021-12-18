@@ -8,11 +8,10 @@ import 'gaveuppage.dart';
 import 'endpage.dart';
 
 class EndPage extends StatelessWidget {
-  int turnCounter;
+  //receives rightCounter to display final score:
   int rightCounter;
-  bool hintsOn;
 
-  EndPage(this.turnCounter, this.rightCounter, this.hintsOn);
+  EndPage(this.rightCounter);
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +59,8 @@ class EndPage extends StatelessWidget {
                       primary: Colors.black,
                       textStyle: const TextStyle(fontSize: 15),
                     ),
+                    //back to firstpage to start new game:
                     onPressed: () {
-                      turnCounter = 0;
-                      rightCounter = 0;
                       Navigator.push(
                           context,
                           MaterialPageRoute(

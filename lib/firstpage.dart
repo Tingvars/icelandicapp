@@ -47,10 +47,11 @@ class _FirstPageState extends State<FirstPage> {
                     textAlign: TextAlign.center,
                   ),
                 ),
+                //The following toggles isChecked for passing on to quizpage
                 Container(
                   child: Checkbox(
                       value: isChecked,
-                      onChanged: (bool? value) { // This is where we update the state when the checkbox is tapped
+                      onChanged: (bool? value) {
                         setState(() {
                           isChecked = value!;
                         });
@@ -81,6 +82,7 @@ class _FirstPageState extends State<FirstPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
+                            //The 0s are values for turnCounter and rightCounter, to reset them when new game starts:
                             builder: (context) => QuizPage(0, 0, isChecked),
                           ));
                     },

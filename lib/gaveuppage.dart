@@ -8,6 +8,7 @@ import 'gaveuppage.dart';
 import 'endpage.dart';
 
 class GaveUpPage extends StatelessWidget {
+  //passing on the current counters, plus the sentences used in the last game:
   int turnCounter;
   int rightCounter;
   String enSentence;
@@ -37,10 +38,12 @@ class GaveUpPage extends StatelessWidget {
               enSentence,
               textAlign: TextAlign.center,
             ),
+            //what the user typed:
             Text(
               "Your answer: $enteredWord1 $enteredWord2 $enteredWord3",
               textAlign: TextAlign.center,
             ),
+            //what the user should have typed:
             Text(
               "Correct answer: $isSentence",
               textAlign: TextAlign.center,
@@ -60,15 +63,16 @@ class GaveUpPage extends StatelessWidget {
                       textStyle: const TextStyle(fontSize: 15),
                     ),
                     onPressed: () {
+                      //checks if this is turn 10, if so ends game:
                       if (turnCounter > 8) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EndPage(turnCounter, rightCounter, hintsOn),
+                              builder: (context) => EndPage(rightCounter),
                             ));
                       } else {
+                        //adds 1 to turn counter and starts new quizpage:
                         turnCounter = turnCounter + 1;
-                        print(turnCounter);
                         Navigator.push(
                             context,
                             MaterialPageRoute(

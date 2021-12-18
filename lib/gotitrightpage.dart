@@ -8,16 +8,14 @@ import 'gaveuppage.dart';
 import 'endpage.dart';
 
 class GotItRightPage extends StatelessWidget {
+  //passing on the current counters, plus the sentences used in the last game:
   int turnCounter;
   int rightCounter;
   String enSentence;
   String isSentence;
   bool hintsOn;
-  String enteredWord1;
-  String enteredWord2;
-  String enteredWord3;
 
-  GotItRightPage(this.turnCounter, this.rightCounter, this.enSentence, this.isSentence, this.hintsOn, this.enteredWord1, this.enteredWord2, this.enteredWord3);
+  GotItRightPage(this.turnCounter, this.rightCounter, this.enSentence, this.isSentence, this.hintsOn);
 
   @override
   Widget build(BuildContext context) {
@@ -67,16 +65,18 @@ class GotItRightPage extends StatelessWidget {
                       textStyle: const TextStyle(fontSize: 15),
                     ),
                     onPressed: () {
+                      //user gets this page if they got it right, so add 1 to "right" counter:
                       rightCounter = rightCounter + 1;
+                      //checks if this is turn 10, if so ends game:
                       if (turnCounter > 8) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EndPage(turnCounter, rightCounter, hintsOn),
+                              builder: (context) => EndPage(rightCounter),
                             ));
                       } else {
+                        //adds 1 to turn counter and starts new quizpage:
                         turnCounter = turnCounter + 1;
-                        print(turnCounter);
                         Navigator.push(
                             context,
                             MaterialPageRoute(

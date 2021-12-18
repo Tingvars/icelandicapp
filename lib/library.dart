@@ -1,6 +1,7 @@
 //0 = 1p sing, 1 = 2p sing, 2 = 3p sing, 3 = 1p plur, 4 = 2p plur, 5 = 3p plur
 import 'dart:math';
 
+//Sentence subjects (first word):
 List<String> sing1pis = ["Ég"];
 List<String> sing2pis = ["Þú"];
 List<String> sing3pis = ["Hann", "Hún", "Það"];
@@ -75,6 +76,7 @@ List<Verb> verbs = [
 class Verb {
   List<String> islVerbList;
   List<String> engVerbList;
+  //records what case this verb causes (accusative (þolfall), dative (þágufall) or genitive (eignarfall)):
   String caseCaused;
 
   Verb(this.islVerbList, this.engVerbList, this.caseCaused);
@@ -293,6 +295,7 @@ class Object {
   String caseCaused;
   int caseInt = 0;
 
+  //used "casecaused" from the verb to pick correct case for object (word 3):
   Object(this.caseCaused) {
     if (caseCaused == "nom") {
       caseInt = 0;
